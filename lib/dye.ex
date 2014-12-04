@@ -1,12 +1,20 @@
 defmodule Dye do
   import IO.ANSI
 
+  defmacro sigil_d({:<<>>, _line, [string]}, []) do
+    string
+  end
+
   defmacro sigil_d({:<<>>, _line, [string]}, [fore]) do
     foreground(fore) <> string <> reset
   end
 
   defmacro sigil_d({:<<>>, _line, [string]}, [fore, back]) do
     foreground(fore) <> background(back) <> string <> reset
+  end
+
+  defmacro sigil_D({:<<>>, _line, [string]}, []) do
+    string
   end
 
   defmacro sigil_D({:<<>>, _line, [string]}, [fore]) do
@@ -17,12 +25,20 @@ defmodule Dye do
     bright <> foreground(fore) <> background(back) <> string <> reset
   end
 
+  defmacro sigil_u({:<<>>, _line, [string]}, []) do
+    string
+  end
+
   defmacro sigil_u({:<<>>, _line, [string]}, [fore]) do
     underline <> foreground(fore) <> string <> reset
   end
 
   defmacro sigil_u({:<<>>, _line, [string]}, [fore, back]) do
     underline <> foreground(fore) <> background(back) <> string <> reset
+  end
+
+  defmacro sigil_U({:<<>>, _line, [string]}, []) do
+    string
   end
 
   defmacro sigil_U({:<<>>, _line, [string]}, [fore]) do
