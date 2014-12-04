@@ -1,0 +1,2 @@
+defmodule Dye do
+end
