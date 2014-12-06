@@ -1,80 +1,70 @@
 defmodule Dye do
-  import IO.ANSI
+  @forecolors %{
+    ?k => "30",
+    ?r => "31",
+    ?g => "32",
+    ?y => "33",
+    ?b => "34",
+    ?m => "35",
+    ?c => "36",
+    ?w => "37",
+    ?K => "90",
+    ?R => "91",
+    ?G => "92",
+    ?Y => "93",
+    ?B => "94",
+    ?M => "95",
+    ?C => "96",
+    ?W => "97"
+  }
 
-  defmacro sigil_d({:<<>>, _line, [string]}, []) do
-    string
+  @backcolors %{
+    ?k => "40",
+    ?r => "41",
+    ?g => "42",
+    ?y => "43",
+    ?b => "44",
+    ?m => "45",
+    ?c => "46",
+    ?w => "47",
+    ?K => "100",
+    ?R => "101",
+    ?G => "102",
+    ?Y => "103",
+    ?B => "104",
+    ?M => "105",
+    ?C => "106",
+    ?W => "107"
+  }
+
+  def sigil_d(string, opts) do
+    parse(opts) <> Macro.unescape_string(string) <> "\e[0m"
   end
 
-  defmacro sigil_d({:<<>>, _line, [string]}, [fore]) do
-    foreground(fore) <> string <> reset
+  def sigil_D(string, opts) do
+    parse(opts) <> string <> "\e[0m"
   end
 
-  defmacro sigil_d({:<<>>, _line, [string]}, [fore, back]) do
-    foreground(fore) <> background(back) <> string <> reset
+
+  defp parse([]), do: ""
+
+  defp parse(opts) do
+    "\e[#{opts |> to_color_codes |> Enum.join(";")}m"
   end
 
-  defmacro sigil_D({:<<>>, _line, [string]}, []) do
-    string
+
+  defp to_color_codes([]), do: []
+
+  defp to_color_codes([?u | colors]) do
+    ["4" | to_color_codes(colors)]
   end
 
-  defmacro sigil_D({:<<>>, _line, [string]}, [fore]) do
-    bright <> foreground(fore) <> string <> reset
+  defp to_color_codes([fgc]) do
+    [Map.get(@forecolors, fgc)]
   end
 
-  defmacro sigil_D({:<<>>, _line, [string]}, [fore, back]) do
-    bright <> foreground(fore) <> background(back) <> string <> reset
-  end
-
-  defmacro sigil_u({:<<>>, _line, [string]}, []) do
-    string
-  end
-
-  defmacro sigil_u({:<<>>, _line, [string]}, [fore]) do
-    underline <> foreground(fore) <> string <> reset
-  end
-
-  defmacro sigil_u({:<<>>, _line, [string]}, [fore, back]) do
-    underline <> foreground(fore) <> background(back) <> string <> reset
-  end
-
-  defmacro sigil_U({:<<>>, _line, [string]}, []) do
-    string
-  end
-
-  defmacro sigil_U({:<<>>, _line, [string]}, [fore]) do
-    underline <> bright <> foreground(fore) <> string <> reset
-  end
-
-  defmacro sigil_U({:<<>>, _line, [string]}, [fore, back]) do
-    underline <> bright <> foreground(fore) <> background(back) <> string <> reset
-  end
-
-  defp foreground(chr) do
-    case chr do
-      ?b -> black
-      ?c -> cyan
-      ?d -> default_color
-      ?g -> green
-      ?m -> magenta
-      ?r -> red
-      ?u -> blue
-      ?w -> white
-      ?y -> yellow
-    end
-  end
-
-  defp background(chr) do
-    case chr do
-      ?b -> black_background
-      ?c -> cyan_background
-      ?d -> default_background
-      ?g -> green_background
-      ?m -> magenta_background
-      ?r -> red_background
-      ?u -> blue_background
-      ?w -> white_background
-      ?y -> yellow_background
-    end
+  defp to_color_codes([fgc, bgc | _]) do
+    [Map.get(@forecolors, fgc), Map.get(@backcolors, bgc)]
   end
 
 end
