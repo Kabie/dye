@@ -33,6 +33,7 @@ iex(7)> ~d"Underline red text with bright green background"urG
 ## Color Modifiers
 
 ```
+d: Default
 k: Black
 r: Red
 g: Green
@@ -49,4 +50,18 @@ B: Bright Blue
 M: Bright Magenta
 C: Bright Cyan
 W: Bright White
+```
+
+## Special Modifiers
+
+These modifiers must appear before color modifiers.
+
+```
+e: Don't reset at the end
+I: Inverse text and background color
+D: Bold
+i: Italic
+u: Underline
+l: Blink slow
+L: Blink rapid
 ```
