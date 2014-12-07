@@ -32,6 +32,9 @@ iex(7)> ~d"Underline red text with bright green background"urG
 
 ## Color Modifiers
 
+The first color modifier will be used as text color. If you only want to set
+background, you can set text then use `I` to inverse the color.
+
 ```
 d: Default
 k: Black
@@ -53,8 +56,6 @@ W: Bright White
 ```
 
 ## Special Modifiers
-
-These modifiers must appear before color modifiers.
 
 ```
 e: Don't reset at the end
