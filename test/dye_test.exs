@@ -3,7 +3,7 @@ defmodule DyeTest do
   import Dye
 
   test "Dyed text" do
-    colors = 'krgybmcwKRGYBMCW'
+    colors = 'dkrgybmcwKRGYBMCW'
 
     colors
     |> Enum.map(fn
