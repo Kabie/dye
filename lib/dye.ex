@@ -1,4 +1,8 @@
 defmodule Dye do
+  @moduledoc """
+  Sigils for colors.
+  """
+
   @forecolors %{
     ?k => "30",
     ?r => "31",
@@ -8,6 +12,7 @@ defmodule Dye do
     ?m => "35",
     ?c => "36",
     ?w => "37",
+    ?d => "39",
     ?K => "90",
     ?R => "91",
     ?G => "92",
@@ -15,7 +20,7 @@ defmodule Dye do
     ?B => "94",
     ?M => "95",
     ?C => "96",
-    ?W => "97"
+    ?W => "97",
   }
 
   @backcolors %{
@@ -27,6 +32,7 @@ defmodule Dye do
     ?m => "45",
     ?c => "46",
     ?w => "47",
+    ?d => "49",
     ?K => "100",
     ?R => "101",
     ?G => "102",
@@ -34,37 +40,91 @@ defmodule Dye do
     ?B => "104",
     ?M => "105",
     ?C => "106",
-    ?W => "107"
+    ?W => "107",
   }
 
-  def sigil_d(string, opts) do
-    parse(opts) <> Macro.unescape_string(string) <> "\e[0m"
+  @colors Map.keys(@forecolors)
+
+  @default_begining %{
+    bold: nil,
+    italic: nil,
+    underline: nil,
+    inverse: nil,
+    blink: nil,
+    foreground: nil,
+    background: nil
+  }
+
+  @default_ending %{
+    ending: "0",
+    blink: nil
+  }
+
+
+  def sigil_d(string, mods) do
+    {begining, ending} = parse(mods, @default_begining, @default_ending)
+    begining <> Macro.unescape_string(string) <> ending
   end
 
-  def sigil_D(string, opts) do
-    parse(opts) <> string <> "\e[0m"
+  def sigil_D(string, mods) do
+    {begining, ending} = parse(mods, @default_begining, @default_ending)
+    begining <> string <> ending
   end
 
-
-  defp parse([]), do: ""
-
-  defp parse(opts) do
-    "\e[#{opts |> to_color_codes |> Enum.join(";")}m"
+  defp parse([?e | mods], begining, ending) do
+    parse(mods, begining, %{ending | ending: nil})
   end
 
-
-  defp to_color_codes([]), do: []
-
-  defp to_color_codes([?u | colors]) do
-    ["4" | to_color_codes(colors)]
+  defp parse([?D | mods], begining, ending) do
+    parse(mods, %{begining | bold: "1"}, ending)
   end
 
-  defp to_color_codes([fgc]) do
-    [Map.get(@forecolors, fgc)]
+  defp parse([?i | mods], begining, ending) do
+    parse(mods, %{begining | italic: "3"}, ending)
   end
 
-  defp to_color_codes([fgc, bgc | _]) do
-    [Map.get(@forecolors, fgc), Map.get(@backcolors, bgc)]
+  defp parse([?u | mods], begining, ending) do
+    parse(mods, %{begining | underline: "4"}, ending)
+  end
+
+  defp parse([?l | mods], begining, ending) do
+    parse(mods, %{begining | blink: "5"}, %{ending | blink: "25"})
+  end
+
+  defp parse([?L | mods], begining, ending) do
+    parse(mods, %{begining | blink: "6"}, %{ending | blink: "25"})
+  end
+
+  defp parse([?I | mods], begining, ending) do
+    parse(mods, %{begining | inverse: "7"}, ending)
+  end
+
+  defp parse([color | mods], %{foreground: nil} = begining, ending) when color in @colors do
+    parse(mods, %{begining | foreground: @forecolors[color]}, ending)
+  end
+
+  defp parse([color | mods], %{background: nil} = begining, ending) when color in @colors do
+    parse(mods, %{begining | background: @backcolors[color]}, ending)
+  end
+
+  defp parse([mod | mods], begining, ending) do
+    IO.puts :stderr, ~d"Dye: unknown modifier: #{<<mod>>}"r
+    parse(mods, begining, ending)
+  end
+
+  defp parse([], begining, ending) do
+    {join(begining), join(ending)}
+  end
+
+  defp join(opts) do
+    opts
+    |> Map.values
+    |> Enum.reject(&is_nil/1)
+    |> Enum.join(";")
+    |> (fn
+      "" -> ""
+      s -> "\e[#{s}m"
+    end).()
   end
 
 end
