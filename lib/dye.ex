@@ -1,6 +1,21 @@
 defmodule Dye do
   @moduledoc """
   Sigils for colors.
+
+  iex> use Dye
+  nil
+  iex> ~s"Red text"r
+  "\e[31mRed text\e[0m"
+  iex> ~s"Bright red text"R
+  "\e[91mBright red text\e[0m"
+  iex> ~s"Bright red text with green background"Rg
+  "\e[42;91mBright red text with green background\e[0m"
+  iex> ~s"Underline"u
+  "\e[4mUnderline\e[0m"
+  iex> ~s"Underline red text"ur
+  "\e[31;4mUnderline red text\e[0m"
+  iex> ~s"Underline red text with bright green background"urG
+  "\e[102;31;4mUnderline red text with bright green background\e[0m"
   """
 
   import Kernel, except: [sigil_s: 2, sigil_S: 2]
@@ -69,11 +84,13 @@ defmodule Dye do
     end
   end
 
+  def sigil_s(string, []), do: Macro.unescape_string(string)
   def sigil_s(string, mods) do
     {begining, ending} = parse(mods, @default_begining, @default_ending)
     begining <> Macro.unescape_string(string) <> ending
   end
 
+  def sigil_S(string, []), do: string
   def sigil_S(string, mods) do
     {begining, ending} = parse(mods, @default_begining, @default_ending)
     begining <> string <> ending
