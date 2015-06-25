@@ -3,6 +3,8 @@ defmodule Dye do
   Sigils for colors.
   """
 
+  import Kernel, except: [sigil_s: 2, sigil_S: 2]
+
   @forecolors %{
     ?k => "30",
     ?r => "31",
@@ -60,13 +62,19 @@ defmodule Dye do
     blink: nil
   }
 
+  defmacro __using__(_options) do
+    quote do
+      import Kernel, except: [sigil_s: 2, sigil_S: 2]
+      import Dye
+    end
+  end
 
-  def sigil_d(string, mods) do
+  def sigil_s(string, mods) do
     {begining, ending} = parse(mods, @default_begining, @default_ending)
     begining <> Macro.unescape_string(string) <> ending
   end
 
-  def sigil_D(string, mods) do
+  def sigil_S(string, mods) do
     {begining, ending} = parse(mods, @default_begining, @default_ending)
     begining <> string <> ending
   end
@@ -108,7 +116,7 @@ defmodule Dye do
   end
 
   defp parse([mod | mods], begining, ending) do
-    IO.puts :stderr, ~d"Dye: unknown modifier: #{<<mod>>}"r
+    IO.puts :stderr, sigil_s("Dye: unknown modifier: #{<<mod>>}", 'r')
     parse(mods, begining, ending)
   end
 
