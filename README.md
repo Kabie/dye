@@ -1,33 +1,33 @@
 Dye
 ===
 
-Note: This lib uses uppercase sigil modifiers. So only works with elixir master right now.
+Note: This lib uses uppercase sigil modifiers. So only works with elixir ~> 1.1.0.
 
-`Dye` introduced two sigils: `~d` and `~D`.
+`Dye` replaces sigils: `~s` and `~S`.
 
 ## Usage
 
 ```elixir
-iex(1)> import Dye
+iex(1)> use Dye
 nil
 
-iex(2)> ~d"Red text"r
+iex(2)> ~s"Red text"r
 "\e[31mRed text\e[0m"
 
-iex(3)> ~d"Bright red text"R
+iex(3)> ~s"Bright red text"R
 "\e[91mBright red text\e[0m"
 
-iex(4)> ~d"Bright red text with green background"Rg
-"\e[91;42mBright red text with green background\e[0m"
+iex(4)> ~s"Bright red text with green background"Rg
+"\e[42;91mBright red text with green background\e[0m"
 
-iex(5)> ~d"Underline"u
+iex(5)> ~s"Underline"u
 "\e[4mUnderline\e[0m"
 
-iex(6)> ~d"Underline red text"ur
-"\e[4;31mUnderline red text\e[0m"
+iex(6)> ~s"Underline red text"ur
+"\e[31;4mUnderline red text\e[0m"
 
-iex(7)> ~d"Underline red text with bright green background"urG
-"\e[4;31;102mUnderline red text with bright green background\e[0m"
+iex(7)> ~s"Underline red text with bright green background"urG
+"\e[102;31;4mUnderline red text with bright green background\e[0m"
 ```
 
 ## Color Modifiers
