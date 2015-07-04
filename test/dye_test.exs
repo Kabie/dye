@@ -12,14 +12,12 @@ defmodule Dye.Test do
   test "Dyed text" do
     colors = 'dkrgybmcwKRGYBMCW'
 
-    colors
-    |> Enum.map(fn
-      i ->
-        colors
-        |> Enum.map(& [i, &1])
-        |> Enum.map(&(sigil_s(to_string(&1), &1)))
-    end)
+    for fc <- colors do
+      for bc <- colors do
+        sigil_s(<<fc, bc>>, [fc, bc])
+      end
+    end
     |> Enum.each(&IO.puts/1)
-
   end
+
 end

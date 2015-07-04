@@ -32,8 +32,11 @@ iex(7)> ~s"Underline red text with bright green background"urG
 
 ## Color Modifiers
 
-The first color modifier will be used as text color. If you only want to set
-background, you can set text then use `I` to inverse the color.
+> $ mix test
+
+![Color modifiers demo](https://github.com/Kabie/dye/raw/master/priv/demo.png)
+
+The first color modifier will be used as text color. If you only want to set background, you can set text then use `I` to inverse the color.
 
 ```
 d: Default
