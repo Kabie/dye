@@ -1,9 +1,10 @@
 Dye
 ===
 
-Note: This lib uses uppercase sigil modifiers. So only works with elixir ~> 1.1.0.
+Note: This lib uses uppercase sigil modifiers. So only works with elixir >= 1.1.0.
 
-`Dye` replaces sigils: `~s` and `~S`.
+`use Dye` will replaces sigils: `~s` and `~S`.
+
 
 ## Usage
 
@@ -29,6 +30,7 @@ iex(6)> ~s"Underline red text"ur
 iex(7)> ~s"Underline red text with bright green background"urG
 "\e[102;31;4mUnderline red text with bright green background\e[0m"
 ```
+
 
 ## Color Modifiers
 
@@ -58,6 +60,7 @@ C: Bright Cyan
 W: Bright White
 ```
 
+
 ## Special Modifiers
 
 ```
@@ -68,4 +71,20 @@ i: Italic
 u: Underline
 l: Blink slow
 L: Blink rapid
+```
+
+
+## Call `sigil_s/sigil_S` directly
+
+The default implementation uses macro, which limits the modifiers can only be char list literal. The following won't work:
+
+```elixir
+mods = 'Rg'
+sigil_S(<<"foo">>, mods)
+```
+
+To use the function implementation, simply do:
+
+```elixir
+use Dye, func: true
 ```
