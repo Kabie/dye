@@ -77,23 +77,52 @@ defmodule Dye do
     blink: nil
   }
 
-  defmacro __using__(_options) do
-    quote do
-      import Kernel, except: [sigil_s: 2, sigil_S: 2]
-      import Dye
+  defmacro __using__(options) do
+    if (options[:func]) do
+      quote do
+        import Kernel, except: [sigil_s: 2, sigil_S: 2]
+        import Dye, only: []
+        import Dye.FuncImpl, only: [sigil_s: 2, sigil_S: 2]
+      end
+    else
+      quote do
+        import Kernel, except: [sigil_s: 2, sigil_S: 2]
+        import Dye.FuncImpl, only: []
+        import Dye, only: [sigil_s: 2, sigil_S: 2]
+      end
     end
   end
 
-  def sigil_s(string, []), do: Macro.unescape_string(string)
-  def sigil_s(string, mods) do
-    {begining, ending} = parse(mods, @default_begining, @default_ending)
-    begining <> Macro.unescape_string(string) <> ending
+  defmacro sigil_s({:<<>>, line, pieces}, []) do
+    {:<<>>, line, Macro.unescape_tokens(pieces)}
+  end
+  defmacro sigil_s({:<<>>, line, pieces}, mods) do
+    {begining, ending} = parse(mods)
+    {:<<>>, line, [begining | Macro.unescape_tokens(pieces) ++ [ending]]}
   end
 
-  def sigil_S(string, []), do: string
-  def sigil_S(string, mods) do
-    {begining, ending} = parse(mods, @default_begining, @default_ending)
-    begining <> string <> ending
+  defmacro sigil_S(string, []), do: string
+  defmacro sigil_S({:<<>>, line, pieces}, mods) do
+    {begining, ending} = parse(mods)
+    {:<<>>, line, [begining | pieces ++ [ending]]}
+  end
+
+  defmodule FuncImpl do
+    def sigil_s(string, []), do: Macro.unescape_string(string)
+    def sigil_s(pieces, mods) do
+      {begining, ending} = Dye.parse(mods)
+      begining <> Macro.unescape_string(pieces) <> ending
+    end
+
+    def sigil_S(string, []), do: string
+    def sigil_S(string, mods) do
+      {begining, ending} = Dye.parse(mods)
+      begining <> string <> ending
+    end
+  end
+
+  def parse(mods) do
+    parse(mods, @default_begining, @default_ending)
   end
 
   defp parse([?e | mods], begining, ending) do
@@ -133,7 +162,6 @@ defmodule Dye do
   end
 
   defp parse([mod | mods], begining, ending) do
-    IO.puts :stderr, sigil_s("Dye: unknown modifier: #{<<mod>>}", 'r')
     parse(mods, begining, ending)
   end
 

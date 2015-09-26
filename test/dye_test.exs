@@ -10,11 +10,13 @@ defmodule Dye.Test do
   end
 
   test "Dyed text" do
+    use Dye, func: true
+
     colors = 'dkrgybmcwKRGYBMCW'
 
     for fc <- colors do
       for bc <- colors do
-        sigil_s(<<fc, bc>>, [fc, bc])
+        sigil_S(<<fc, bc>>, [fc, bc])
       end
     end
     |> Enum.each(&IO.puts/1)
