@@ -3,8 +3,8 @@ defmodule Dye.Mixfile do
 
   def project do
     [app: :dye,
-     version: "0.3.0",
-     elixir: "~> 1.1.0-dev",
+     version: "0.4.0",
+     elixir: ">= 1.1.0",
      description: "Dyeing your terminal!",
      package: package,
      deps: deps]
