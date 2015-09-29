@@ -161,7 +161,7 @@ defmodule Dye do
     parse(mods, %{begining | background: @backcolors[color]}, ending)
   end
 
-  defp parse([mod | mods], begining, ending) do
+  defp parse([_mod | mods], begining, ending) do
     parse(mods, begining, ending)
   end
 
