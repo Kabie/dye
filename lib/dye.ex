@@ -3,7 +3,7 @@ defmodule Dye do
   Sigils for colors.
 
   iex> use Dye
-  nil
+  Dye
   iex> ~s"Red text"r
   "\e[31mRed text\e[0m"
   iex> ~s"Bright red text"R

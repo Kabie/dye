@@ -3,7 +3,7 @@ defmodule Dye.Mixfile do
 
   def project do
     [app: :dye,
-     version: "0.4.0",
+     version: "0.4.1",
      elixir: ">= 1.1.0",
      description: "Dyeing your terminal!",
      package: package,
@@ -16,8 +16,8 @@ defmodule Dye.Mixfile do
 
   defp package do
     [# These are the default files included in the package
-     files: ["lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
-     contributors: ["Kabie"],
+     files: ["lib", "priv", "mix.exs", "README.md"],
+     maintainers: ["Kabie"],
      licenses: ["MIT"],
      links: %{"GitHub" => "https://github.com/Kabie/dye"}]
   end

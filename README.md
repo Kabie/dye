@@ -10,7 +10,7 @@ Note: This lib uses uppercase sigil modifiers. So only works with elixir >= 1.1.
 
 ```elixir
 iex(1)> use Dye
-nil
+Dye
 
 iex(2)> ~s"Red text"r
 "\e[31mRed text\e[0m"
