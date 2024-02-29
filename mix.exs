@@ -6,8 +6,8 @@ defmodule Dye.Mixfile do
      version: "0.4.1",
      elixir: ">= 1.1.0",
      description: "Dyeing your terminal!",
-     package: package,
-     deps: deps]
+     package: package(),
+     deps: deps()]
   end
 
   def application do
