@@ -93,12 +93,25 @@ defmodule Dye do
     end
   end
 
-  defmacro sigil_s({:<<>>, line, pieces}, []) do
-    {:<<>>, line, Macro.unescape_tokens(pieces)}
+  defp unescape_tokens(tokens) do
+    :lists.map(
+      fn token ->
+        case is_binary(token) do
+          true -> :elixir_interpolation.unescape_string(token)
+          false -> token
+        end
+      end,
+      tokens
+    )
   end
+
+  defmacro sigil_s({:<<>>, line, pieces}, []) do
+    {:<<>>, line, unescape_tokens(pieces)}
+  end
+
   defmacro sigil_s({:<<>>, line, pieces}, mods) do
     {begining, ending} = parse(mods)
-    {:<<>>, line, [begining | Macro.unescape_tokens(pieces) ++ [ending]]}
+    {:<<>>, line, [begining | unescape_tokens(pieces) ++ [ending]]}
   end
 
   defmacro sigil_S(string, []), do: string
@@ -171,7 +184,8 @@ defmodule Dye do
 
   defp join(opts) do
     opts
-    |> Map.values
+    |> Enum.sort()
+    |> Keyword.values()
     |> Enum.reject(&is_nil/1)
     |> Enum.join(";")
     |> (fn

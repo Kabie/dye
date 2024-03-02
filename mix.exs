@@ -3,18 +3,18 @@ defmodule Dye.Mixfile do
 
   def project do
     [app: :dye,
-     version: "0.4.1",
+     version: "0.4.2",
      elixir: ">= 1.1.0",
      description: "Dyeing your terminal!",
      package: package(),
      deps: deps()]
   end
 
-  def application do
+  def application() do
     [applications: []]
   end
 
-  defp package do
+  defp package() do
     [# These are the default files included in the package
      files: ["lib", "priv", "mix.exs", "README.md"],
      maintainers: ["Kabie"],
@@ -22,7 +22,7 @@ defmodule Dye.Mixfile do
      links: %{"GitHub" => "https://github.com/Kabie/dye"}]
   end
 
-  defp deps do
+  defp deps() do
     []
   end
 end
